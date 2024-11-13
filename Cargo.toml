@@ -1,0 +1,59 @@
+[package]
+name = "hooks"
+version = "0.1.0"
+edition = "2021"
+description = "A hooking library with various methods of detouring/hooking methods in remote/internal windows processes."
+authors = ["Cozmoe <https://github.com/cozmoe>"]
+repository = "https://github.com/runebite/hooks-rs.git"
+docs = "https://docs.rs/runebite/hooks-rs"
+website = "https://github.com/runebite/"
+keywords = ["hook", "detour", "remote", "internal", "windows"]
+categories = ["development", "library"]
+readme = "README.md"
+license = "GPL-3"
+license-file = "LICENSE.md"
+
+[features]
+default = []
+detour = []
+trampoline = []
+veh = []
+inline = []
+
+[lib]
+name = "hooks"
+crate-type = ["staticlib", "cdylib"]
+
+[dependencies]
+log = "0.4.22"
+env_logger = { version = "0.11.5" }
+my-env-logger-style = "0.2.0"
+thiserror = "2.0.3"
+anyhow = "1.0.93"
+iced-x86 = { version = "1.21.0", default-features = false, features = ["std", "decoder", "block_encoder", "instr_info"] }
+bitflags = "2.6.0"
+
+[target.'cfg(windows)'.dependencies.windows-sys]
+version = "0.59.0"
+features = [
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_System_Threading",
+    "Win32_System_Memory"
+]
+
+[profile.dev]
+opt-level = 0
+debug = true
+lto = false
+codegen-units = 16
+incremental = false
+
+[profile.release]
+opt-level = "z"
+lto = "fat"
+debug = false
+strip = true
+codegen-units = 1
+panic = "abort"
+
